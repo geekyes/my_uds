@@ -4,8 +4,6 @@ build/*/*.dll
 build/**/_*
 build/**/*.exe
 
-docs
-
 /**/.*
 
 !.gitignore
