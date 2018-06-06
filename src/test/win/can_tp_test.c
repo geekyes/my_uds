@@ -8,7 +8,7 @@
 #include <pthread.h> // 提供周期调度的线程
 #include <string.h>
 
-#include "CAN_TP.h"
+#include "can_tp.h"
 #include "socketwin_can.h"
 
 #define BUSID 0
