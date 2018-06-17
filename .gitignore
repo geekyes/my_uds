@@ -1,9 +1,19 @@
 
-build/**/*.o
-build/*/*.dll
-build/**/_*
-build/**/*.exe
+
+
+
+
+
+
+
+
+
+
+
+
+
+build/**/*
+!build/**/*.py
 
 /**/.*
-
 !.gitignore

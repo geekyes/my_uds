@@ -1,10 +1,19 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
-#include <windows.h> // 提供延时Sleep(ms)
 #include <pthread.h>
 
+#undef SLEEP
+#ifdef LINUX__
+#include "socket_can.h"
+#define SLEEP(ARG) usleep((unsigned int)(ARG) * 1000)
+#endif
+
+#ifdef WIN__
 #include "socketwin_can.h"
+#define SLEEP(ARG) Sleep((unsigned int)(ARG))
+#endif
 
 #include "can_tp.h"
 #include "uds.h"
@@ -32,12 +41,12 @@ static void rx_frame_data(uint32_t busid, uint32_t canid, uint32_t dlc,\
 
 int main(int argc, char **argv)
 {
-    reset_op_t reset_op = {reset};
+    reset_op_t reset_op = {mcu_dev_reset};
     mem_dev_t dev = {
         check_addr_and_size,
         check_range,
-        write,
-        read
+        mcu_dev_write,
+        mcu_dev_read
     };
     /* init  */
     init_network_layer(send_link_layer, rcv_link_layer);
@@ -50,7 +59,7 @@ int main(int argc, char **argv)
      */
     while (!socket_probe(BUSID, PORT, BAUDRATE, rx_frame_data)) {
         printf("socket_probe return false, socketwin_can offline!\n");
-        Sleep(500); // 延迟一定时间后再次连接
+        SLEEP(500); // 延迟一定时间后再次连接
     }
 
     /* 创建can_tp的守护线程 */
@@ -64,7 +73,7 @@ int main(int argc, char **argv)
     {
         main_uds_polling();
         /* 相当于周期调度 */
-        Sleep(MAIN_UDS_POLLING_PERIOD);
+        SLEEP(MAIN_UDS_POLLING_PERIOD);
     }
 
     pthread_mutex_destroy(&N_PDU_mutex);
@@ -81,7 +90,7 @@ static void* can_tp_daemon(void* param)
     {
         main_network_layer();
         /* 相当于周期调度 */
-        Sleep(MAIN_NETWORK_LAYER_PERIOD);
+        SLEEP(MAIN_NETWORK_LAYER_PERIOD);
     }
 
     return NULL;
@@ -105,9 +114,8 @@ static void rx_frame_data(uint32_t busid, uint32_t canid, uint32_t dlc,\
         N_PDU.is_valid = DATA_VALID;
     }
     pthread_mutex_unlock(&N_PDU_mutex);
-    Sleep(2);
+    SLEEP(2);
 }
-
 
 /* 发送链路层接口 */
 static void send_link_layer(N_PDU_t* p_pdu)

@@ -4,18 +4,29 @@
  */
 
 #include <stdio.h>
-#include <windows.h> // 提供延时Sleep(ms)
+#include <stdlib.h>
 #include <pthread.h> // 提供周期调度的线程
 #include <string.h>
 
 #include "can_tp.h"
+
+#undef SLEEP
+#ifdef LINUX__
+#include "socket_can.h"
+#define SLEEP(ARG) usleep((unsigned int)(ARG) * 1000)
+#endif
+
+#ifdef WIN__
 #include "socketwin_can.h"
+#define SLEEP(ARG) Sleep((unsigned int)(ARG))
+#endif
 
 #define BUSID 0
 #define PORT 0
 #define BAUDRATE 500000
 #define SEND_DATA_BUF_MAX 100
 #define RCV_DATA_BUF_MAX 100
+
 
 #ifdef CLIENT_A
 static N_AI_t send_addr = {.id = 0x700, .N_TAtype = PHYSICAL_ADDR};
@@ -54,7 +65,7 @@ int main(int argc, char *argv[])
      */
     while (!socket_probe(BUSID, PORT, BAUDRATE, rx_frame_data)) {
         printf("socket_probe return false, socketwin_can offline!\n");
-        Sleep(500); // 延迟一定时间后再次连接
+        SLEEP(500); // 延迟一定时间后再次连接
     }
 
     /* 创建can_tp的守护线程 */
@@ -113,13 +124,13 @@ int main(int argc, char *argv[])
                 if (result != N_INVALID) {
                     break; // 发送完成或是发送出错
                 }
-                Sleep(MAIN_NETWORK_LAYER_PERIOD);
+                SLEEP(MAIN_NETWORK_LAYER_PERIOD);
             }
             for (int i = 0; i < strlen((char*)send_data_buf); i++) {
                 send_data_buf[i] = 0;
             }
         }
-        Sleep(MAIN_NETWORK_LAYER_PERIOD);
+        SLEEP(MAIN_NETWORK_LAYER_PERIOD);
     }
 
     pthread_mutex_destroy(&N_PDU_mutex);
@@ -180,7 +191,7 @@ static void* can_tp_daemon(void* param)
             putchar('\n');
         }
         /* 相当于周期调度 */
-        Sleep(MAIN_NETWORK_LAYER_PERIOD);
+        SLEEP(MAIN_NETWORK_LAYER_PERIOD);
     }
 
     return NULL;
@@ -204,7 +215,7 @@ static void rx_frame_data(uint32_t busid, uint32_t canid, uint32_t dlc,\
         N_PDU.is_valid = DATA_VALID;
     }
     pthread_mutex_unlock(&N_PDU_mutex);
-    Sleep(MAIN_NETWORK_LAYER_PERIOD);
+    SLEEP(MAIN_NETWORK_LAYER_PERIOD);
 }
 
 

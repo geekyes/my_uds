@@ -1,5 +1,16 @@
 #include <stdio.h>
-#include <windows.h>
+#include <stdlib.h>
+
+#undef SLEEP
+#ifdef LINUX__
+#include "socket_can.h"
+#define SLEEP(ARG) usleep((unsigned int)(ARG) * 1000)
+#endif
+
+#ifdef WIN__
+#include "socketwin_can.h"
+#define SLEEP(ARG) Sleep((unsigned int)(ARG))
+#endif
 
 #include "mcu_dev.h"
 
@@ -29,36 +40,36 @@ uint8_t check_range(addr_t start_addr, addr_t end_addr)
     uint8_t ret = 0;
 
     puts("exec mcu_dev check_range!!!!");
-    //Sleep(MAIN_UDS_POLLING_PERIOD);
+    //SLEEP(MAIN_UDS_POLLING_PERIOD);
 
     return ret;
 }
 
-uint8_t write(addr_t start_addr, size_of_op_t op_size)
+uint8_t mcu_dev_write(addr_t start_addr, size_of_op_t op_size)
 {
     uint8_t ret = 0;
 
     puts("exec mcu_dev write!!!!");
-    //Sleep(MAIN_UDS_POLLING_PERIOD);
+    //SLEEP(MAIN_UDS_POLLING_PERIOD);
 
     return ret;
 }
 
-uint8_t read(addr_t start_addr, size_of_op_t op_size)
+uint8_t mcu_dev_read(addr_t start_addr, size_of_op_t op_size)
 {
     uint8_t ret = 0;
 
     puts("exec mcu_dev read!!!!");
-    //Sleep(MAIN_UDS_POLLING_PERIOD);
+    //SLEEP(MAIN_UDS_POLLING_PERIOD);
 
     return ret;
 }
 
 // 退出程序
-void reset(reset_type_t type)
+void mcu_dev_reset(reset_type_t type)
 {
     puts("exec mcu_dev reset!!!!");
-    Sleep(1000);
+    SLEEP(1000);
 
     exit(1);
 }
