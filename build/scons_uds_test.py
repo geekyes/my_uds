@@ -7,7 +7,7 @@
 #   filename   : scons_uds_test.py
 #   author     : chenjiang
 #   date       : 2018-06-17
-#   description: use scons build can_tp_test in linux
+#   description: use scons build can_tp_test
 #
 #================================================================
 
@@ -18,6 +18,7 @@ src_filter = ['can_tp_test.c']
 #  不需要的目录
 dir_filter = ['win']
 
+#  递归目录寻找所有 C 文件，h 文件所在目录
 def get_src_files_header_paths(curr_path):
     folder_list = []
     header_file_dir_list = []
@@ -56,8 +57,8 @@ def get_src_files_header_paths(curr_path):
         folder_list += tmp_folder
 
     #  调试函数是否执行正确，join是把 list 字符化
-    print('src file list: \n' + '\n'.join(src_file_list))
-    print('header file dir list: \n' + '\n'.join(header_file_dir_list))
+    #  print('src file list: \n' + '\n'.join(src_file_list))
+    #  print('header file dir list: \n' + '\n'.join(header_file_dir_list))
 
     return src_file_list, header_file_dir_list 
 
@@ -68,7 +69,7 @@ def compile_objs(objs_path, compile_list, compiler):
         compiler.Object(obj, src)
 
 #  设置工程的目录
-project_path = '../../'
+project_path = '../'
 script_path = './'
 uds_test_path = script_path + 'uds_test/'
 src_file_list, header_file_dir_list = get_src_files_header_paths(project_path)
@@ -82,8 +83,13 @@ uds = Environment()
 uds['CC'] = 'gcc'
 uds['CFLAGS'] = '-Wall -g -O2'
 uds['LIBS'] = 'pthread'
-uds['CPPDEFINES'] = ['LINUX__', '__LINUX__']
 uds['CPPPATH'] = header_file_dir_list
+if ('nt' == os.name):
+    uds['LIBS'] = 'wsock32'
+    uds['CPPDEFINES'] = ['WIN_PLATFORM__']
+elif ('posix' == os.name):
+    uds['LIBS'] = 'pthread'
+    uds['CPPDEFINES'] = ['LINUX_PLATFORM__']
 
 #  建立 uds 的 objs 目录
 uds_objs = uds_test_path + 'objs/'

@@ -359,7 +359,7 @@ if(__name__ == '__main__'):
     rx_id = 0x700
     tx_id = 0x701
     rcv_STmin = 60
-    rcv_BS = 4
+    rcv_BS = 3
     padding = 0x0
 
     can_open(busid,device,port,baudrate)

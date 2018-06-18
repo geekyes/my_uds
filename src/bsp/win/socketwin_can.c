@@ -12,7 +12,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
  * for more details.
  */
-//#ifdef __WINDOWS__
+#ifdef WIN_PLATFORM__
 /* ============================ [ INCLUDES  ] ====================================================== */
 /* most of the code copy from https://github.com/linux-can/can-utils */
 #include <winsock2.h>
@@ -106,20 +106,19 @@ struct Can_SocketHandleList_s
 	STAILQ_HEAD(,Can_SocketHandle_s) head;
 };
 /* ============================ [ DECLARES  ] ====================================================== */
-/* static boolean socket_probe(uint32_t busid,uint32_t port,uint32_t baudrate,can_device_rx_notification_t rx_notification); */
-/* static boolean socket_write(uint32_t port,uint32_t canid,uint32_t dlc,uint8_t* data); */
-/* static void socket_close(uint32_t port); */
+static boolean socket_probe(uint32_t busid,uint32_t port,uint32_t baudrate,can_device_rx_notification_t rx_notification);
+static boolean socket_write(uint32_t port,uint32_t canid,uint32_t dlc,uint8_t* data);
+static void socket_close(uint32_t port);
 static void * rx_daemon(void *);
 /* ============================ [ DATAS     ] ====================================================== */
-/*
- *const Can_DeviceOpsType can_socket_ops =
- *{
- *    .name = "socket",
- *    .probe = socket_probe,
- *    .close = socket_close,
- *    .write = socket_write,
- *};
- */
+const Can_DeviceOpsType can_socket_ops =
+{
+   .name = "socket",
+   .probe = socket_probe,
+   .close = socket_close,
+   .write = socket_write,
+};
+
 static struct Can_SocketHandleList_s* socketH = NULL;
 /* ============================ [ LOCALS    ] ====================================================== */
 static struct Can_SocketHandle_s* getHandle(uint32_t port)
@@ -140,7 +139,7 @@ static struct Can_SocketHandle_s* getHandle(uint32_t port)
 	return handle;
 }
 
-boolean socket_probe(uint32_t busid,uint32_t port,uint32_t baudrate,can_device_rx_notification_t rx_notification)
+static boolean socket_probe(uint32_t busid,uint32_t port,uint32_t baudrate,can_device_rx_notification_t rx_notification)
 {
 	boolean rv = TRUE;;
 	struct Can_SocketHandle_s* handle;
@@ -226,7 +225,7 @@ boolean socket_probe(uint32_t busid,uint32_t port,uint32_t baudrate,can_device_r
 
 	return rv;
 }
-boolean socket_write(uint32_t port,uint32_t canid,uint32_t dlc,uint8_t* data)
+static boolean socket_write(uint32_t port,uint32_t canid,uint32_t dlc,uint8_t* data)
 {
 	boolean rv = TRUE;
 	struct Can_SocketHandle_s* handle = getHandle(port);
@@ -252,7 +251,7 @@ boolean socket_write(uint32_t port,uint32_t canid,uint32_t dlc,uint8_t* data)
 
 	return rv;
 }
-void socket_close(uint32_t port)
+static void socket_close(uint32_t port)
 {
 	struct Can_SocketHandle_s* handle = getHandle(port);
 	if(NULL != handle)
@@ -288,6 +287,7 @@ static void rx_notifiy(struct Can_SocketHandle_s* handle)
 	}
 
 }
+
 static void * rx_daemon(void * param)
 {
 	(void)param;
@@ -304,5 +304,5 @@ static void * rx_daemon(void * param)
 }
 
 /* ============================ [ FUNCTIONS ] ====================================================== */
-//#endif /* __WINDOWS__ */
+#endif /* WIN_PLATFORM__ */
 

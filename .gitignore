@@ -1,11 +1,8 @@
 
-
-build/win/*
-!build/win/*.py
-
-build/linux/*
-!build/linux/*.py
+build/*
+!build/*.py
 
 /**/.*
 /**/_*
+/**/*.os
 !.gitignore

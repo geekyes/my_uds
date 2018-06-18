@@ -2,12 +2,12 @@
 #include <stdlib.h>
 
 #undef SLEEP
-#ifdef LINUX__
+#ifdef LINUX_PLATFORM__
 #include "socket_can.h"
 #define SLEEP(ARG) usleep((unsigned int)(ARG) * 1000)
 #endif
 
-#ifdef WIN__
+#ifdef WIN_PLATFORM__
 #include "socketwin_can.h"
 #define SLEEP(ARG) Sleep((unsigned int)(ARG))
 #endif

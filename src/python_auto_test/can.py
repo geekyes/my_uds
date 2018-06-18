@@ -15,14 +15,18 @@ __lic__ = '''
  */
  '''
 
+import os
 from ctypes import *
 
 # 加载can读写库
-can_rw_lib = cdll.LoadLibrary('./msys-can_rw_lib.dll')
+if ('nt' == os.name):
+    can_rw_lib = cdll.LoadLibrary('../../build/dep/libpython_can_lib.dll')
+elif ('posix' == os.name):
+    can_rw_lib = cdll.LoadLibrary('../../build/dep/libpython_can_lib.so')
 
 def can_open(busid,device,port,baudrate):
     # lib初始化数据对象(容器)
-    can_rw_lib.can_rw_lib_open()
+    can_rw_lib.python_can_lib_open()
     return can_rw_lib.can_open(c_ulong(busid), c_char_p(device),\
             c_ulong(port), c_ulong(baudrate))
 
@@ -56,4 +60,5 @@ def can_read(busid,canid):
 
 # 直接关闭所有bus
 def can_close(busid):
-    can_rw_lib.can_rw_lib_close()
+    can_rw_lib.python_can_lib_close()
+

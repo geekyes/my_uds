@@ -150,7 +150,7 @@ if(__name__ == '__main__'):
 
     can_open(busid,device,port,baudrate)
     diag  = dcm(busid, rx_id, tx_id, rcv_STmin, rcv_BS, padding)
-    res = diag.transmit([0x27,0x1])
+    res = diag.transmit([0x11,0x2])
     # 关闭所有bus
     can_close(0)
     

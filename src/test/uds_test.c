@@ -5,12 +5,12 @@
 #include <pthread.h>
 
 #undef SLEEP
-#ifdef LINUX__
+#ifdef LINUX_PLATFORM__
 #include "socket_can.h"
 #define SLEEP(ARG) usleep((unsigned int)(ARG) * 1000)
 #endif
 
-#ifdef WIN__
+#ifdef WIN_PLATFORM__
 #include "socketwin_can.h"
 #define SLEEP(ARG) Sleep((unsigned int)(ARG))
 #endif
@@ -29,6 +29,14 @@
 static N_PDU_t N_PDU = {.is_valid = DATA_INVALID};
 /* N_PDU的互斥量 */
 static pthread_mutex_t N_PDU_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+#ifdef LINUX_PLATFORM__
+static const Can_DeviceOpsType * const can_dev = &can_socket_ops;
+#endif
+
+#ifdef WIN_PLATFORM__
+static const Can_DeviceOpsType * const can_dev = &can_socketwin_ops;
+#endif
 
 /* can_tp的守护线程 */
 static void* can_tp_daemon(void* param);
@@ -57,8 +65,8 @@ int main(int argc, char **argv)
      * boolean socket_probe(uint32_t busid, uint32_t port, uint32_t baudrate,\
      *                     can_device_rx_notification_t rx_notification);
      */
-    while (!socket_probe(BUSID, PORT, BAUDRATE, rx_frame_data)) {
-        printf("socket_probe return false, socketwin_can offline!\n");
+    while (!can_dev->probe(BUSID, PORT, BAUDRATE, rx_frame_data)) {
+        printf("can_dev->probe return false, socket_can offline!\n");
         SLEEP(500); // 延迟一定时间后再次连接
     }
 
@@ -77,7 +85,7 @@ int main(int argc, char **argv)
     }
 
     pthread_mutex_destroy(&N_PDU_mutex);
-    socket_close(PORT);
+    can_dev->close(PORT);
     puts("\nnormal exit...");
 
     return 0;
@@ -125,13 +133,13 @@ static void send_link_layer(N_PDU_t* p_pdu)
      * boolean socket_write(uint32_t port, uint32_t canid, uint32_t dlc,\
      * uint8_t* data);
      */
-    if (!socket_write(PORT, send_addr.id, CAN_FRAME_SIZE, p_pdu->N_PCI_Data)) {
-        printf("socket_write return false\n");
+    if (!can_dev->write(PORT, send_addr.id, CAN_FRAME_SIZE, p_pdu->N_PCI_Data)) {
+        printf("can_dev->write return false\n");
         /*
          * 函数原型
          * void socket_close(uint32_t port);
          */
-        socket_close(PORT);
+        can_dev->close(PORT);
         exit(1);
     }
 }
