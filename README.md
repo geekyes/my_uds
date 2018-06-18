@@ -1,14 +1,15 @@
 ### 说明
 
-**build**下的测试脚步来自：[parai](https://github.com/parai/as "大神的工程")
+src/python\_auto\_test : 测试脚步来自：[parai](https://github.com/parai/as "大神的工程")
 
 ### 构建环境
 
 1. [msys2](http://www.msys2.com "官网")
 2. [scons](https://www.scons.org "官网")
 
-### fixed
+### 构建测试
 
-**测试脚本需要一个CAN的读写库**
-
+#### 构建 can tp test
+#### 构建 uds test
+#### 构建 python can lib
 
