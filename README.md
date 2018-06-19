@@ -19,7 +19,7 @@ $ pacman -Syu # 同步并对整个系统更新
 #### ubuntu 18.04 64bit
 执行下面的命令：
 ```bash
-$
+$ apt install gcc scons
 ```
 
 ### 构建测试
