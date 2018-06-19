@@ -16,7 +16,10 @@ import os, sys
 #  不需要的源文件
 src_filter = ['can_tp_test.c']
 #  不需要的目录
-dir_filter = ['win']
+if ('msys' == sys.platform):
+    dir_filter = ['linux']
+elif ('posix' == os.name):
+    dir_filter = ['win']
 
 #  递归目录寻找所有 C 文件，h 文件所在目录
 def get_src_files_header_paths(curr_path):
@@ -84,7 +87,7 @@ uds['CC'] = 'gcc'
 uds['CFLAGS'] = '-Wall -g -O2'
 uds['LIBS'] = 'pthread'
 uds['CPPPATH'] = header_file_dir_list
-if ('nt' == os.name):
+if ('msys' == sys.platform):
     uds['LIBS'] = 'wsock32'
     uds['CPPDEFINES'] = ['WIN_PLATFORM__']
 elif ('posix' == os.name):

@@ -32,7 +32,10 @@ def compile_objs(objs_path, compile_list, compiler):
 
 #  设置工程的目录
 project_path = '../'
-can_driver_api_path = project_path + 'src/bsp/linux/'
+if ('msys' == sys.platform):
+    can_driver_api_path = project_path + 'src/bsp/win/'
+elif('posix' == os.name):
+    can_driver_api_path = project_path + 'src/bsp/linux/'
 bsp_path = project_path + 'src/bsp/'
 app_path = project_path + 'src/'
 test_path = project_path + 'src/test/'
@@ -61,7 +64,7 @@ client_b['CC'] = 'gcc'
 client_b['CFLAGS'] = '-Wall -g -O2'
 client_b['CPPPATH'] = [can_driver_api_path, bsp_path, app_path,
         python_auto_test_path]
-if ('nt' == os.name):
+if ('msys' == sys.platform):
     client_a['LIBS'] = 'wsock32'
     client_a['CPPDEFINES'] = ['WIN_PLATFORM__', 'CLIENT_A']
     client_b['LIBS'] = 'wsock32'

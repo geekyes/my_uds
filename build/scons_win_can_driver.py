@@ -11,9 +11,9 @@
 #
 #================================================================
 
-import os
+import os, sys
 
-if ('nt' == os.name):
+if ('msys' == sys.platform):
     project_path = '../'
     lib_path = './dep/'
 
@@ -30,6 +30,8 @@ if ('nt' == os.name):
     win_can_driver['LIBS'] = 'wsock32'
     win_can_driver['CPPDEFINES'] = ['__SOCKET_WIN_CAN_DRIVER__']
 
-    win_can_driver.Program(lib_path + 'win_can_driver', src_file_list)
+    win_can_driver.Object(lib_path + 'socketwin_can_driver', src_file_list)
+    win_can_driver.Program(lib_path + 'win_can_driver',
+            lib_path + 'socketwin_can_driver.o')
 else:
     print('win 下使用！！！\n')
