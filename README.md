@@ -42,7 +42,7 @@ $ sudo modprobe vcan
 $ sudo ip link add dev vcan0 type vcan
 $ sudo ip link set up vcan0
 # 安装 can-utils 工具，用于嗅探和解析 can 数据
-# sudo apt install can-utils
+$ sudo apt install can-utils
 ```
 **windows:**
 ```bash
