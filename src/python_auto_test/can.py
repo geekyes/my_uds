@@ -20,7 +20,7 @@ from ctypes import *
 
 # 加载can读写库
 if ('nt' == os.name):
-    can_rw_lib = cdll.LoadLibrary('../../build/dep/libpython_can_lib.dll')
+    can_rw_lib = cdll.LoadLibrary('../../build/dep/msys-python_can_lib.dll')
 elif ('posix' == os.name):
     can_rw_lib = cdll.LoadLibrary('../../build/dep/libpython_can_lib.so')
 

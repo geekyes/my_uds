@@ -15,17 +15,26 @@
  * for more details.
  */
 /* ============================ [ INCLUDES  ] ====================================================== */
+#ifdef LINUX_PLATFORM__
+#include <unistd.h>
+#endif
+
+#ifdef WIN_PLATFORM__
+#include <windows.h>
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
-#include <unistd.h>
 /* ============================ [ MACROS    ] ====================================================== */
 #define CAN_DEVICE_NAME_SIZE 32
 
+#ifdef LINUX_PLATFORM__
 #define TRUE (true)
 #define FALSE (false)
 
 /* ============================ [ TYPES     ] ====================================================== */
 typedef bool boolean; 
+#endif
 
 typedef void (*can_device_rx_notification_t)(uint32_t busid, uint32_t canid, 
         uint32_t dlc, uint8_t* data);

@@ -6,6 +6,6 @@
 
 #include "python_can_lib.h"
 
-extern const Can_DeviceOpsType can_socket_ops;
+extern const Can_DeviceOpsType can_socketwin_ops;
 
 #endif /* SOCKETWIN_CAN_H__ */

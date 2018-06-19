@@ -2,7 +2,12 @@
 build/*
 !build/*.py
 
+docs/*
+!docs/*.md
+
 /**/.*
 /**/_*
 /**/*.os
+/**/*.o
+/**/*.exe
 !.gitignore

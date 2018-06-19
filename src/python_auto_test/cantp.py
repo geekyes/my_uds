@@ -356,10 +356,10 @@ if(__name__ == '__main__'):
     device = b'socket'
     port = 0
     baudrate = 500000
-    rx_id = 0x700
-    tx_id = 0x701
+    rx_id = 0x701
+    tx_id = 0x700
     rcv_STmin = 60
-    rcv_BS = 3
+    rcv_BS = 4
     padding = 0x0
 
     can_open(busid,device,port,baudrate)

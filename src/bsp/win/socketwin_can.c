@@ -111,7 +111,7 @@ static boolean socket_write(uint32_t port,uint32_t canid,uint32_t dlc,uint8_t* d
 static void socket_close(uint32_t port);
 static void * rx_daemon(void *);
 /* ============================ [ DATAS     ] ====================================================== */
-const Can_DeviceOpsType can_socket_ops =
+const Can_DeviceOpsType can_socketwin_ops =
 {
    .name = "socket",
    .probe = socket_probe,
